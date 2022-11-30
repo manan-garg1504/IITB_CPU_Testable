@@ -1,0 +1,16 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity Memory is 
+	port (
+			clk, write_en: in std_logic; 
+			Addr_in, D_in: in std_logic_vector(15 downto 0);
+			Mem_out: out std_logic_vector(15 downto 0)
+	); 
+end entity; 
+
+architecture behave of Memory is 
+
+	type mem is array(255 downto 0) of std_logic_vector(15 downto 0);
+	signal mem_reg : mem := (
