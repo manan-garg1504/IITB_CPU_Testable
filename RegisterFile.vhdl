@@ -18,8 +18,8 @@ architecture behave of RegisterFile is
 	
 	type RF is array(0 to 7) of std_logic_vector(15 downto 0);
 	signal registers: RF:= (7 => "1111111111111111", others => "0000000000000000");
-	signal next_PC, PC_carry: std_logic_vector(15 downto 0);
-	signal Equals, Prev_S0: std_logic:= '0';
+	signal next_PC, PC_carry, PC_plus: std_logic_vector(15 downto 0);
+	signal Equals: std_logic:= '0';
 	signal regA, regB : std_logic_vector(15 downto 0);
 
 	function bin (lvec: in std_logic_vector) return string is
@@ -50,10 +50,9 @@ begin
 			if(write_enable = '1') then
 					registers(to_integer(unsigned(RC))) <= write_data;
 			end if;
-			if(Prev_S0 = '0' and S0 = '1')then
+			if(S0 = '1')then
 				registers(7) <= next_PC;
 			end if;
-			Prev_S0 <= S0;
 		end if;
 		
 		if (rst = '1') then
@@ -65,19 +64,20 @@ begin
 		end if;
 	end process;
 
-	next_PC(0) <= not registers(7)(0);
+	PC_plus(0) <= not registers(7)(0);
 	PC_carry(0) <= registers(7)(0);
 	
 	Gen: for i in 1 to 15 generate
 		PC_carry(i) <= PC_carry(i-1) and registers(7)(i);
-		next_PC(i) <= PC_carry(i-1) xor registers(7)(i);
+		PC_plus(i) <= PC_carry(i-1) xor registers(7)(i);
 	end generate;
 
 	PC_out <= registers(7);
-	next_PC_out <= regB when JLR = '1' else
+	next_PC <= regB when JLR = '1' else
 		ALU_out when ((BEQ and Equals) or JAL) = '1' else
-		next_PC;
-
+		PC_plus;
+	next_PC_out <= next_PC;
+	
 	file_open(file_RESULTS, "..\..\output.txt", write_mode);
 	test_proc: process(S0)
 		variable message: string(1 to 18);

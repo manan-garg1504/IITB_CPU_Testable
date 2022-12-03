@@ -31,20 +31,10 @@ void write_file(string file)
 
 int main()
 {
-    while(true){
-        cout << "Read from code.txt?(Y/N)" << endl;
-
-        string ans; cin >> ans;
-        if(ans == "Y" or ans == "y"){
-            freopen("code.txt", "r", stdin);
-            break;
-        }
-        else if(ans != "N" and ans != "n")
-            cout << "Did not recognize response" << endl;
-        else
-            break;
-    }
-    freopen("memory.vhd", "w", stdout);
+    
+    freopen("code.txt", "r", stdin);
+    freopen("memory.vhdl", "w", stdout);
+    
     string opcode, R;
     int i = 0, imm = 0;
 
@@ -79,7 +69,7 @@ int main()
         else if(opcode == "ADI" or opcode == "SW" or opcode == "LW" or opcode == "JLR" or opcode == "BEQ")
         {
             if(opcode == "ADI")
-                cout << "0000";
+                cout << "0001";
             else if(opcode == "LW")
                 cout << "0100";
             else if(opcode == "SW")
