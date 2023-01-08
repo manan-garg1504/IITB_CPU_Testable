@@ -7,11 +7,20 @@ using namespace std;
 string to_bin(int n, int len)
 {
     string ans = "";
-    
-    for(int i = 0; i < len; i++)    
+
+    if(n < 0)
+    {
+        int N = 1;
+        for(int j = 0; j < len; j++)
+            N*=2; 
+        
+        n += N;
+    }
+
+    for(int i = 0;i < len; i++)    
     {    
-        ans = to_string(n%2) + ans;    
-        n = n/2;  
+        ans = to_string(n%2) + ans;
+        n /= 2;  
     }
 
     return ans;

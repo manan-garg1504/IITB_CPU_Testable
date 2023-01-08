@@ -1,5 +1,5 @@
 others => x"0000");
-	
+
 begin
 
 	process(clk)
@@ -8,6 +8,6 @@ begin
 			mem_reg(to_integer(unsigned(Addr_in))) <= D_in;
 		end if;
 	end process;
-	
+
 	Mem_out <= mem_reg(to_integer(unsigned(Addr_in(7 downto 0))));
 end behave;

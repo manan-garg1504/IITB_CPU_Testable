@@ -9,7 +9,6 @@ end entity Comb_logic;
 architecture struct of Comb_logic is
     signal  ALU, ADI_LHI, Branches, NotBEQ: std_logic;
 begin
-    --The below are basically a set of Muxes
     ALU <= Instruction(14) nor Instruction(15);
     NandAdd <= ALU and not(Instruction(12));
     ADI_LHI <= ALU and Instruction(12);

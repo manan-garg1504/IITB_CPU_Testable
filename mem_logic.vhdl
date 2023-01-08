@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity mem_logic is
-	port(   alu_out, PC_Next, D1: in std_logic_vector(15 downto 0);
+	port(   alu_out, PC, D1: in std_logic_vector(15 downto 0);
 			OpCode: in std_logic_vector(3 downto 0);
 			clock, S0 ,S2, S3,activate, StoreLoad: in std_logic;
 			write_enable: out std_logic;
@@ -14,8 +14,8 @@ architecture memory_logic of mem_logic is
 	signal Temp_Reg: std_logic_vector(15 downto 0):= (others => '0');
 
 begin
-	
-	Address <= PC_next when S0 = '1' else
+
+	Address <= PC when S0 = '1' else
 			   Temp_Reg when OpCode(1) = '1' else
 			   alu_out;
 

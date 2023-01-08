@@ -15,7 +15,7 @@ signal clk: std_logic:= '1';
 signal reset: std_logic:= '1';
 constant clk_period : time := 20 ns;
 begin
-	
+
 	dut_instance: CPU port map(reset, clk);
 	clk_50 <= not clk_50 after clk_period/2;
 	reset <= '0' after 20 ns;

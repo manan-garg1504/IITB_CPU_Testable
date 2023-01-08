@@ -4,7 +4,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all; 
 
-
 entity reg_logic is
 	port (curr_ins, mem_out, alu_out, pc: in std_logic_vector(15 downto 0);
 		counter: in std_logic_vector(2 downto 0);
@@ -22,14 +21,14 @@ begin
 
 	immediate <= curr_ins(to_integer(unsigned(counter) + 8));
 	activate <= immediate;
-	
+
 	ra <= curr_ins(8 downto 6) when ((StoreLoad and not curr_ins(13))='1') else
 		  curr_ins(11 downto 9);
-	
+
 	rb <= curr_ins(8 downto 6) when StoreLoad = '0' else
 		  counter when curr_ins(13) = '1' else
 		  curr_ins(11 downto 9);
-	
+
 	rc <= curr_ins(5 downto 3) when NandAdd = '1' else
 		  curr_ins(8 downto 6) when ADI = '1' else
 		  counter when ((StoreLoad  and curr_ins(13)) = '1') else

@@ -10,12 +10,11 @@ architecture bhv of CPU is
     --signal declaration
 
     signal PC_out:std_logic_vector(15 downto 0);
-    signal PC_Next:std_logic_vector(15 downto 0);
 
     signal Curr_Ins, Mem_out: std_logic_vector(15 downto 0);
     signal Mem_Data: std_logic_vector(15 downto 0);
     signal Mem_Add: std_logic_vector(15 downto 0);
-    signal S0, S1, S2, S3, FlagC, FlagZ: std_logic;
+    signal S0, S1, S2, S3, FlagC, FlagZ, set_pc: std_logic;
 
     signal ALU_1, ALU_2, ALU_Out: std_logic_vector(15 downto 0);
     signal Count, RegAddrA, RegAddrB, RegAddrC: std_logic_vector(2 downto 0);
@@ -27,7 +26,7 @@ architecture bhv of CPU is
 
     -- components declaration
     component mem_logic is
-        port(alu_out, PC_Next, D1: in std_logic_vector(15 downto 0);
+        port(alu_out, PC, D1: in std_logic_vector(15 downto 0);
 			OpCode: in std_logic_vector(3 downto 0);
             clock, S0, S2, S3, StoreLoad, activate: in std_logic;
             write_enable: out std_logic;
@@ -58,12 +57,12 @@ architecture bhv of CPU is
 
     component RegisterFile is 
         port( 
-      RA,RB,RC: in std_logic_vector(2 downto 0);
+        RA,RB,RC: in std_logic_vector(2 downto 0);
 		write_data, ALU_out: in std_logic_vector(15 downto 0);
-		clock, S0, BEQ, JAL, JLR: in std_logic;
+		clock, S0, set_pc, BEQ, JAL, JLR: in std_logic;
 		rst, write_enable: in std_logic ;
 		D1, D2: out std_logic_vector(15 downto 0);
-		PC_out, next_PC_out : out std_logic_vector(15 downto 0));
+		PC_out: out std_logic_vector(15 downto 0));
     end component;
 
     component alu_logic is
@@ -96,10 +95,10 @@ begin
 	end process;
 
     PreMem: mem_logic port map (
-        alu_out => ALU_Out, PC_Next => PC_Next, D1 => Reg_Out_1, OpCode => curr_ins(15 downto 12),
+        alu_out => ALU_Out, PC => PC_out, D1 => Reg_Out_1, OpCode => curr_ins(15 downto 12),
         clock => clk, S0 => S0, S2 => S2, S3 => S3,StoreLoad => StoreLoad, activate => Immediate, 
         write_enable => memWriteEn, Address => Mem_Add);
-    
+
     Mem: Memory port map(
         clk => clk, write_en => memWriteEn, Addr_in => Mem_Add, D_in => Reg_Out_2, Mem_out => Mem_out); 
 
@@ -112,17 +111,18 @@ begin
         counter => Count, S2 => S2, S3 => S3, NandAdd => NandAdd, ADI => ADI, StoreLoad => StoreLoad,
         LHI => LHI, BEQ => BEQ, JAL => JAL, JLR => JLR, C => FlagC, Z => FlagZ, ra => RegAddrA, 
 		rb => RegAddrB, rc => RegAddrC, write_data => RF_IN, load_enable => Load_Enable, activate => Immediate);
-
+    
+    set_pc <= S2 or S3;
     RF: RegisterFile port map( 
         RA => RegAddrA, RB => RegAddrB, RC => RegAddrC, write_data => RF_IN, ALU_out => ALU_Out,
-		clock => clk, S0 => S0, BEQ => BEQ, JAL => JAL, JLR => JLR, rst => reset, write_enable => Load_Enable, 
-        D1 => Reg_Out_1, D2 => Reg_Out_2, PC_out => PC_out, next_PC_out => PC_next);
+		clock => clk, S0 => S0, set_pc => set_pc, BEQ => BEQ, JAL => JAL, JLR => JLR, rst => reset, write_enable => Load_Enable, 
+        D1 => Reg_Out_1, D2 => Reg_Out_2, PC_out => PC_out);
 
     PreAlu: alu_logic port map (
         curr_ins => Curr_ins, pc => PC_out, D1 => Reg_Out_1, D2 => Reg_Out_2,
         StoreLoad => StoreLoad, NandAdd => NandAdd, BEQ => BEQ, JAL => JAL,
         ALU_IN1 => ALU_1, ALU_IN2 => ALU_2);
-		
+
     TheAlu: ALU port map(
         NandAdd => NandAdd, S0 => S0, ADI => ADI, StoreLoad => StoreLoad, Data1 => ALU_1, Data2 => ALU_2,
         OpCode => Curr_Ins(14 downto 12), Output => ALU_Out, C => FlagC, Z => FlagZ);

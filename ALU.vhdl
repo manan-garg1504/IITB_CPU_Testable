@@ -21,10 +21,10 @@ architecture arch of ALU is
 
 begin
 	NandIns <= NandAdd and OpCode(1);
-	 
+
 	ALU_out <= nand_buf when NandIns = '1' else
 			   sum_buf;
-    
+
     Output <= ALU_out;
 
     sum_buf(0) <= Data1(0) xor Data2(0);
@@ -46,7 +46,7 @@ begin
 
     update: process(S0)
     begin
-        if(rising_edge(S0)) then
+        if(falling_edge(S0)) then
             if((NandAdd or ADI or (StoreLoad and (OpCode(1) nor OpCode(0)))) = '1') then
                 Z <= Z_current;
             end if;

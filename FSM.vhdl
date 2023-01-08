@@ -44,7 +44,7 @@ begin
                 end if;              
                 states(0) <= '0';
                 counter <= "000";
-            
+
             elsif(states(2) = '1') then
                 states(2) <= '0';
                 states(0) <= '1';
@@ -65,7 +65,7 @@ begin
             end if;
         end if;
     end process;
-	 
+
     S0 <= states(0);
     S1 <= states(1);
     S2 <= states(2);
