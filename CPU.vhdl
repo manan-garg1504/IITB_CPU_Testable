@@ -112,7 +112,7 @@ begin
         LHI => LHI, BEQ => BEQ, JAL => JAL, JLR => JLR, C => FlagC, Z => FlagZ, ra => RegAddrA, 
 		rb => RegAddrB, rc => RegAddrC, write_data => RF_IN, load_enable => Load_Enable, activate => Immediate);
     
-    set_pc <= S2 or S3;
+    set_pc <= S2 or (S3 and Count(0) and Count(1) and Count(2));
     RF: RegisterFile port map( 
         RA => RegAddrA, RB => RegAddrB, RC => RegAddrC, write_data => RF_IN, ALU_out => ALU_Out,
 		clock => clk, S0 => S0, set_pc => set_pc, BEQ => BEQ, JAL => JAL, JLR => JLR, rst => reset, write_enable => Load_Enable, 
