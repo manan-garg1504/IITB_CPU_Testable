@@ -6,4 +6,4 @@ You will need the quartus software installed, along with a c++ compiler and will
 
 The syntax to write instructions into code.txt is simple, and uses the format on the "instructions encoding" page of the given problem statement (Available in the Testing Directory). Also given in this project is sample code to show you how each instruction can be written. Do note, that as of now, the assembler DOES NOT detect errors in code.txt, and wrong syntax would most likely cause a stall or at least an infinite loop.
 
-(In essencce, each line of code.txt will initiallize one memory address, starting from zero. The rest are initialized to 0)
+(In essence, each line of code.txt will initiallize one memory address, starting from zero. The rest are initialized to 0)
